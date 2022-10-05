@@ -40,8 +40,14 @@ func main() {
 			table.WriteRow(msg)
 			continue
 		}
+		// make replacements more obvious
+		action := string(c.ResourceChange.Action)
+		switch c.ResourceChange.Replacement {
+		case types.ReplacementTrue, types.ReplacementConditional:
+			action += " [r]"
+		}
 		table.WriteRow(
-			string(c.ResourceChange.Action),
+			action,
 			aws.ToString(c.ResourceChange.LogicalResourceId),
 			aws.ToString(c.ResourceChange.PhysicalResourceId),
 			aws.ToString(c.ResourceChange.ResourceType),
