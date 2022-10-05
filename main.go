@@ -12,6 +12,9 @@ import (
 
 func main() {
 	// read the changeset json
+	var table MarkdownTable
+	flag.StringVar(&table.EmptyValue, "empty", "-", "value to use for empty cells")
+	flag.IntVar(&table.MaxLen, "maxlen", 16, "max column data width")
 	flag.Parse()
 	if flag.NArg() < 1 {
 		log.Fatal("no changeset file provided")
@@ -25,8 +28,6 @@ func main() {
 		log.Fatal(err)
 	}
 	// convert it to markdown
-	var table MarkdownTable
-	table.EmptyValue = "-"
 	table.WriteHeaders(
 		"Action",
 		"Logical ID",
@@ -40,14 +41,8 @@ func main() {
 			table.WriteRow(msg)
 			continue
 		}
-		// make replacements more obvious
-		action := string(c.ResourceChange.Action)
-		switch c.ResourceChange.Replacement {
-		case types.ReplacementTrue, types.ReplacementConditional:
-			action += "[r]"
-		}
 		table.WriteRow(
-			action,
+			string(c.ResourceChange.Action),
 			aws.ToString(c.ResourceChange.LogicalResourceId),
 			aws.ToString(c.ResourceChange.PhysicalResourceId),
 			aws.ToString(c.ResourceChange.ResourceType),
