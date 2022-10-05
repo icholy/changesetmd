@@ -44,7 +44,7 @@ func main() {
 		action := string(c.ResourceChange.Action)
 		switch c.ResourceChange.Replacement {
 		case types.ReplacementTrue, types.ReplacementConditional:
-			action += " [r]"
+			action += "[r]"
 		}
 		table.WriteRow(
 			action,
